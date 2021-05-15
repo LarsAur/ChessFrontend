@@ -1,0 +1,26 @@
+body{
+    background-color: #303036;
+}
+
+svg text {
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+}
+
+#board-container{
+    position: relative;
+    top: 4vh;
+    width: 70vw;
+    height: 90vh;
+    margin: auto;
+}
+
+#board{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
