@@ -3,7 +3,7 @@
 This is the frontend of my [chess-engine](https://github.com/LarsAur/ChessEngine).
 This is also an attempt at using [webassembly](https://webassembly.org/) to run the engine in the browser at near native speed.
 
-![Image of the chess board](./initialBoard.PNG)
+![Image of the chess board](InitialBoard.PNG)
 
 # Credits
 
