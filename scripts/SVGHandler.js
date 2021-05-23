@@ -1,9 +1,34 @@
-const setupSVGBoard = () =>
-{
+let api;
+Module.onRuntimeInitialized = () => {
+    api = {
+        init: Module.cwrap('init', null, ['number']),
+        isCheckmate: Module.cwrap('isBoardCheckmate', 'number', []),
+        getBoardPointer: Module.cwrap('getCurrentBoardPointer', 'number', []),
+        getBoardSize: Module.cwrap('getCurrentBoardSize', 'number', []),
+        resetBoard: Module.cwrap('resetBoard', null, []),
+    }
+
+    onWASMLoaded();
+};
+
+function onWASMLoaded() {
+
+    console.log("Init...");
+    api.init(10);
+    api.resetBoard();
+    console.log("Init finished");
+    
+    document.getElementById("loader").setAttribute("hidden", "true");
+    const boardView = new Uint8Array(Module.HEAP8.buffer, api.getBoardPointer(), 64);
+    let board = new Uint8Array(boardView);
+
+    setupSVGBoard(board);
+}
+
+const setupSVGBoard = (board) => {
     const svgBoard = document.getElementById("board");
     // Add all board squares
-    for(let i = 0; i < 64; i++)
-    {
+    for (let i = 0; i < 64; i++) {
         let square = document.createElementNS("http://www.w3.org/2000/svg", "rect");
         let x = Math.floor(i / 8);
         let y = Math.floor(i % 8);
@@ -15,8 +40,7 @@ const setupSVGBoard = () =>
         svgBoard.appendChild(square);
 
         // Add rank numbers
-        if(x == 0)
-        {
+        if (x == 0) {
             let text = document.createElementNS("http://www.w3.org/2000/svg", "text");
             text.setAttribute("x", x * 10 + 0.5);
             text.setAttribute("y", y * 10 + 2.25);
@@ -24,10 +48,9 @@ const setupSVGBoard = () =>
             text.textContent = "" + (-y + 8);
             svgBoard.appendChild(text);
         }
-        
+
         // Add file numbers
-        if(y == 7)
-        {
+        if (y == 7) {
             let text = document.createElementNS("http://www.w3.org/2000/svg", "text");
             text.setAttribute("x", x * 10 + 7.5);
             text.setAttribute("y", y * 10 + 9);
@@ -37,43 +60,48 @@ const setupSVGBoard = () =>
         }
     }
 
-    for(let file = 0; file < 8; file++)
-    {
-        addPieceElement("./sprites/pawn.png", file, 6, svgBoard);
-        addPieceElement("./sprites/pawn1.png", file, 1, svgBoard);
-    }
+    for (let i = 0; i < 64; i++) {
+        if (board[i] == 0) continue;
 
-    addPieceElement("./sprites/rook1.png", 0, 0, svgBoard);
-    addPieceElement("./sprites/knight1.png", 1, 0, svgBoard);
-    addPieceElement("./sprites/bishop1.png", 2, 0, svgBoard);
-    addPieceElement("./sprites/queen1.png", 3, 0, svgBoard);
-    addPieceElement("./sprites/king1.png", 4, 0, svgBoard);
-    addPieceElement("./sprites/bishop1.png", 5, 0, svgBoard);
-    addPieceElement("./sprites/knight1.png", 6, 0, svgBoard);
-    addPieceElement("./sprites/rook1.png", 7, 0, svgBoard);
-    
-    addPieceElement("./sprites/rook.png", 0, 7, svgBoard);
-    addPieceElement("./sprites/knight.png", 1, 7, svgBoard);
-    addPieceElement("./sprites/bishop.png", 2, 7, svgBoard);
-    addPieceElement("./sprites/queen.png", 3, 7, svgBoard);
-    addPieceElement("./sprites/king.png", 4, 7, svgBoard);
-    addPieceElement("./sprites/bishop.png", 5, 7, svgBoard);
-    addPieceElement("./sprites/knight.png", 6, 7, svgBoard);
-    addPieceElement("./sprites/rook.png", 7, 7, svgBoard);
+        // 16 is WHITE and 8 is BLACK
+        let color = board[i] & 0b11000
+        let type = board[i] & 0b00111
+        let spriteType;
+
+        switch (type) {
+            case 0b001: // Pawn
+                spriteType = "pawn";
+                break;
+            case 0b010: // Rook
+                spriteType = "rook";
+                break;
+            case 0b011: // Knight
+                spriteType = "knight";
+                break;
+            case 0b100: // Bishop
+                spriteType = "bishop";
+                break;
+            case 0b101: // King
+                spriteType = "king";
+                break;
+            case 0b110: // Queen
+                spriteType = "queen";
+                break;
+        }
+
+        let path = "./sprites/" + spriteType + (color == 8 ? "1": "") + ".png";
+        let rank = Math.floor(i / 8);
+        let file = i % 8;
+        addPieceElement(path, rank, file, svgBoard);
+    }
 }
 
-const addPieceElement = (src, x, y, svgBoard) =>
-{
+const addPieceElement = (src, rank, file, svgBoard) => {
     let image = document.createElementNS("http://www.w3.org/2000/svg", "image");
     image.setAttribute("href", src);
-    image.setAttribute("x", x*10 + 1);
-    image.setAttribute("y", y*10 + 1);
+    image.setAttribute("x", file * 10 + 1);
+    image.setAttribute("y", (-rank+7) * 10 + 1);
     image.setAttribute("width", "10%");
     image.setAttribute("height", "10%");
     svgBoard.appendChild(image);
 }
-
-
-
-
-window.addEventListener('load', (event) => setupSVGBoard());
