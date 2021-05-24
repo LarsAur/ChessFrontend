@@ -4,7 +4,7 @@ let currentPiece = null;
 let from_file, from_rank;
 let to_file, to_rank;
 
-const depth = 4;
+const depth = 3;
 
 function onWASMLoaded() {
     console.log("Init...");
