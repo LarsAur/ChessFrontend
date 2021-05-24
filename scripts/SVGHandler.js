@@ -1,29 +1,4 @@
-let api;
-Module.onRuntimeInitialized = () => {
-    api = {
-        init: Module.cwrap('init', null, ['number']),
-        isCheckmate: Module.cwrap('isBoardCheckmate', 'number', []),
-        getBoardPointer: Module.cwrap('getCurrentBoardPointer', 'number', []),
-        getBoardSize: Module.cwrap('getCurrentBoardSize', 'number', []),
-        resetBoard: Module.cwrap('resetBoard', null, []),
-    }
-
-    onWASMLoaded();
-};
-
-function onWASMLoaded() {
-
-    console.log("Init...");
-    api.init(10);
-    api.resetBoard();
-    console.log("Init finished");
-    
-    document.getElementById("loader").setAttribute("hidden", "true");
-    const boardView = new Uint8Array(Module.HEAP8.buffer, api.getBoardPointer(), 64);
-    let board = new Uint8Array(boardView);
-
-    setupSVGBoard(board);
-}
+let pieceIds = Array(64).fill("-");
 
 const setupSVGBoard = (board) => {
     const svgBoard = document.getElementById("board");
@@ -60,6 +35,30 @@ const setupSVGBoard = (board) => {
         }
     }
 
+    setupPieces(board);
+}
+
+let marked;
+// This marks the svg elements for removal, such that their ids can be reused, bit the elements can still be drawn
+const markPiecesForRemove = () => {
+    marked = [];
+    const svgBoard = document.getElementById("board");
+    for (let i = 0; i < 64; i++) {
+        if(pieceIds[i] == "-") continue;
+        marked.push(svgBoard.getElementById(pieceIds[i]))
+    }
+    pieceIds = Array(64).fill("-");
+} 
+
+const removePieces = () => {
+    const svgBoard = document.getElementById("board");
+    marked.forEach(element => {
+        svgBoard.removeChild(element);
+    });
+}
+
+const setupPieces = (board) => {
+    const svgBoard = document.getElementById("board");
     for (let i = 0; i < 64; i++) {
         if (board[i] == 0) continue;
 
@@ -89,19 +88,21 @@ const setupSVGBoard = (board) => {
                 break;
         }
 
-        let path = "./sprites/" + spriteType + (color == 8 ? "1": "") + ".png";
+        let path = "./sprites/" + spriteType + (color == 8 ? "1" : "") + ".png";
         let rank = Math.floor(i / 8);
         let file = i % 8;
-        addPieceElement(path, rank, file, svgBoard);
+        addPieceElement(path, rank, file, svgBoard, "id_" + i);
+        pieceIds[i] = "id_" + i;
     }
 }
 
-const addPieceElement = (src, rank, file, svgBoard) => {
+const addPieceElement = (src, rank, file, svgBoard, id) => {
     let image = document.createElementNS("http://www.w3.org/2000/svg", "image");
     image.setAttribute("href", src);
     image.setAttribute("x", file * 10 + 1);
-    image.setAttribute("y", (-rank+7) * 10 + 1);
+    image.setAttribute("y", (-rank + 7) * 10 + 1);
     image.setAttribute("width", "10%");
     image.setAttribute("height", "10%");
+    image.setAttribute("id", id);
     svgBoard.appendChild(image);
 }

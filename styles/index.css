@@ -9,11 +9,28 @@ svg text {
             user-select: none;
 }
 
+#message-box{
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    color: #ddd;
+    font-size: larger;
+    visibility: hidden;
+}
+
+#promotion-select{
+    position: absolute;
+    width: 300px;
+    left: 50%;
+    top: 1vh;
+    transform: translate(-50%, 0);
+    visibility: hidden;
+}
+
 #board-container{
     position: relative;
-    top: 4vh;
-    width: 70vw;
-    height: 90vh;
+    top: 10vh;
+    width: min(70vw, 80vh);
+    height: min(70vw, 80vh);
     margin: auto;
 }
 

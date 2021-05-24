@@ -26,6 +26,10 @@
         </p>
     </div>
 
+    <div id="message-box">
+        
+    </div>
+
     <div id="board-container">
 
         <style>
@@ -37,11 +41,25 @@
 
         <svg id="board" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
         </svg>
+
+
     </div>
 
-</body>
+    <svg id="promotion-select" viewBox="0 0 40 10" xmlns="http://www.w3.org/2000/svg">
+        <image href="./sprites/queen.png" x="0" y="0" width="25%" height="100%" id="promQ"></image>
+        <image href="./sprites/rook.png" x="10" y="0" width="25%" height="100%" id="promR"></image>
+        <image href="./sprites/bishop.png" x="20" y="0" width="25%" height="100%" id="promB"></image>
+        <image href="./sprites/knight.png" x="30" y="0" width="25%" height="100%" id="promK"></image>
+    </svg>
 
+
+</body>
+<script>
+    let api; // This is to make the api accessable globaly
+</script>
 <script src="./scripts/a.out.js"></script>
 <script src="./scripts/SVGHandler.js"></script>
+<script src="./scripts/mouseHandler.js"></script>
+<script src="./scripts/api.js"></script>
 
 </html>
