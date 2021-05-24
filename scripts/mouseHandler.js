@@ -58,7 +58,6 @@ const onMouseUp = (e) => {
         }
 
         let accept = api.performMove(from, to, 0);
-        console.log(accept)
 
         if (accept == 1) {
             let boardView = new Uint8Array(Module.HEAP8.buffer, api.getBoardPointer(), 64);
@@ -72,17 +71,7 @@ const onMouseUp = (e) => {
                 return;
             }
 
-            api.performAIMove(depth);
-            boardView = new Uint8Array(Module.HEAP8.buffer, api.getBoardPointer(), 64);
-            board = new Uint8Array(boardView);
-            markPiecesForRemove();
-            setupPieces(board);
-            removePieces();
-
-            if (api.isCheckmate() != 0) {
-                onTermination();
-                return;
-            }
+            setTimeout(performAITurn, 100);
         }
         else {
             currentPiece.setAttribute("x", from_file * 10 + 1);
@@ -123,17 +112,7 @@ const promoteToType = (type) => {
             return;
         }
 
-        api.performAIMove(depth);
-        boardView = new Uint8Array(Module.HEAP8.buffer, api.getBoardPointer(), 64);
-        board = new Uint8Array(boardView);
-        markPiecesForRemove();
-        setupPieces(board);
-        removePieces();
-
-        if (api.isCheckmate() != 0) {
-            onTermination();
-            return;
-        }
+        setTimeout(performAITurn, 100);
     }
     else {
         currentPiece.setAttribute("x", from_file * 10 + 1);
@@ -143,23 +122,34 @@ const promoteToType = (type) => {
     currentPiece = null;
 }
 
+const performAITurn = () => {
+    api.performAIMove(depth);
+    let boardView = new Uint8Array(Module.HEAP8.buffer, api.getBoardPointer(), 64);
+    let board = new Uint8Array(boardView);
+    markPiecesForRemove();
+    setupPieces(board);
+    removePieces();
+
+    if (api.isCheckmate() != 0) {
+        onTermination();
+        return;
+    }
+}
+
 const onTermination = () => {
     box = document.getElementById("message-box");
     box.style.visibility = "visible";
-    
-    if(api.isCheckmate() == 1)
-    {
+
+    if (api.isCheckmate() == 1) {
         box.innerHTML = "Stalemate";
     }
-    
-    if(api.isCheckmate() == 16)
-    {
+
+    if (api.isCheckmate() == 16) {
         box.innerHTML = "White wins";
-        
+
     }
-    
-    if(api.isCheckmate() == 8)
-    {
+
+    if (api.isCheckmate() == 8) {
         box.innerHTML = "Black wins";
     }
 }
