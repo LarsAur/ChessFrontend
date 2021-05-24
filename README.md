@@ -5,7 +5,7 @@ This is also an attempt at using [webassembly](https://webassembly.org/) to run 
 
 ![Image of the chess board](InitialBoard.PNG)
 
-#Play
+# Play
 You can play against my bot [here](https://larsaur.github.io/ChessFrontend/)
 
 # Credits
