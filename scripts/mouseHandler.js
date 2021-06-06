@@ -8,7 +8,7 @@ const depth = 4;
 
 function onWASMLoaded() {
     console.log("Init...");
-    api.init(10);
+    api.init(16);
     api.resetBoard();
     console.log("Init finished");
 
