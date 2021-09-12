@@ -2,11 +2,15 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="Unicode">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./styles/index.css">
     <link rel="stylesheet" href="./styles/loader.css">
+    <link rel="stylesheet" href="./styles/processing.css">
+    <link rel="stylesheet" href="./styles/settings.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="icon" href="./sprites/pawn1.png">
     <title>Chess</title>
 </head>
 
@@ -26,10 +30,6 @@
         </p>
     </div>
 
-    <div id="message-box">
-        
-    </div>
-
     <div id="board-container">
 
         <style>
@@ -41,9 +41,11 @@
 
         <svg id="board" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
         </svg>
-
-
     </div>
+
+    <span id="processing-container" style="visibility: hidden">
+        <div id="processing" class="processing"></div>
+    </span>
 
     <svg id="promotion-select" viewBox="0 0 40 10" xmlns="http://www.w3.org/2000/svg">
         <image href="./sprites/queen.png" x="0" y="0" width="25%" height="100%" id="promQ"></image>
@@ -51,6 +53,55 @@
         <image href="./sprites/bishop.png" x="20" y="0" width="25%" height="100%" id="promB"></image>
         <image href="./sprites/knight.png" x="30" y="0" width="25%" height="100%" id="promK"></image>
     </svg>
+
+    <i id="settings-btn" class="fa fa-gear" style="font-size:25px;color:#F7F3E3"></i>
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h1>Settings</h1>
+            <hr>
+            <h2>Play as:</h2>
+            <span id="radio-container">
+                <input type="radio" id="white" name="color_select" checked>
+                <label for="white">&#9817;</label>
+                <input type="radio" id="black" name="color_select">
+                <label for="black">&#9823;</label>
+            </span>
+            <p>NOTE: This will only take effect once the game has reset</p>
+            <hr>
+            <h2>Computer Depth:</h2>
+            <span>
+                <select id="depth-selector" name="depth" id="select-depth">
+                    <option value=1>1</option>
+                    <option value=2>2</option>
+                    <option value=3>3</option>
+                    <option value=4>4</option>
+                    <option value=5>5</option>
+                    <option value=6 selected>6</option>
+                    <option value=7>7</option>
+                    <option value=8>8</option>
+                </select>
+            </span>
+            <p>NOTE: any depth over 6 is not recomended unless you have some patience</p>
+            <hr>
+            <h2>Reset:</h2>
+            <span id="reset-container">
+                <a id="reset-btn" class="button">Reset Game</a>
+            </span>
+        </div>
+    </div>
+
+    <div id="termination-modal" class="modal">
+        <div class="modal-content">
+            <span class="termination-container">
+                <h1 id="termination-msg">Wins!</h1>
+            </span>
+            <span id="reset-container">
+                <a id="reset-btn2" class="button">Reset Game</a>
+                <a id="view-board-btn" class="button">View Board</a>
+            </span>
+        </div>
+    </div>
 
 
 </body>
@@ -60,6 +111,7 @@
 <script src="./scripts/a.out.js"></script>
 <script src="./scripts/SVGHandler.js"></script>
 <script src="./scripts/mouseHandler.js"></script>
+<script src="./scripts/settings.js"></script>
 <script src="./scripts/api.js"></script>
 
 </html>

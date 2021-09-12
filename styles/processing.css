@@ -1,0 +1,22 @@
+.processing {
+    border: 16px solid #f3f3f3;
+    border-top: 16px solid #46515800;
+    border-bottom: 16px solid #46515800;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    border-width: 10px;
+    animation: rotate 2s ease-in-out infinite;
+  }
+  
+  @keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+#processing-container{
+    position: absolute;
+    left: 50%;
+    top: 10px;
+    transform: translate(-50%, 0);
+}

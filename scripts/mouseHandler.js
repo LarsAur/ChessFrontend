@@ -4,15 +4,13 @@ let currentPiece = null;
 let from_file, from_rank;
 let to_file, to_rank;
 
-const depth = 4;
-
 function onWASMLoaded() {
     console.log("Init...");
     api.init(16);
     api.resetBoard();
     console.log("Init finished");
 
-    document.getElementById("loader").setAttribute("hidden", "true");
+    document.getElementById("loader").style.visibility = "hidden";
     const boardView = new Uint8Array(Module.HEAP8.buffer, api.getBoardPointer(), 64);
     let board = new Uint8Array(boardView);
 
@@ -20,7 +18,21 @@ function onWASMLoaded() {
 }
 
 const onMouseDown = (e) => {
-    if (api.getTurn() != 16) return;   // If it is not whites turn, do nothing
+
+    let radios = document.getElementsByName('color_select');
+	let play_as = 0;
+    // Play as white
+	if(radios[0].checked)
+	{
+		play_as = 32;
+	}
+	// play as black
+	else if(radios[1].checked)
+	{
+        play_as = 16;
+	}
+
+    if (api.getTurn() == play_as) return;   // If it is not whites turn, do nothing
 
     let boardSize = board.clientWidth;
 
@@ -60,17 +72,22 @@ const onMouseUp = (e) => {
         let accept = api.performMove(from, to, 0);
 
         if (accept == 1) {
+            setPrevFromTo(from, to);
             let boardView = new Uint8Array(Module.HEAP8.buffer, api.getBoardPointer(), 64);
             let board = new Uint8Array(boardView);
+            var audio = new Audio('../audio/Move.wav');
+            audio.play();
             markPiecesForRemove();
             setupPieces(board);
             removePieces();
+
 
             if (api.isCheckmate() != 0) {
                 onTermination();
                 return;
             }
 
+            document.getElementById("processing-container").style.visibility = "visible";
             setTimeout(performAITurn, 100);
         }
         else {
@@ -112,6 +129,7 @@ const promoteToType = (type) => {
             return;
         }
 
+        document.getElementById("processing-container").style.visibility = "visible";
         setTimeout(performAITurn, 100);
     }
     else {
@@ -123,9 +141,18 @@ const promoteToType = (type) => {
 }
 
 const performAITurn = () => {
+
+    var select = document.getElementById('depth-selector');
+    var depth = select.options[select.selectedIndex].value;
+
     api.performAIMove(depth);
+
+    document.getElementById("processing-container").style.visibility = "hidden";
+    setPrevFromTo(api.getPrevAIMoveFrom(), api.getPrevAIMoveTo());
     let boardView = new Uint8Array(Module.HEAP8.buffer, api.getBoardPointer(), 64);
     let board = new Uint8Array(boardView);
+    var audio = new Audio('../audio/Move.wav');
+    audio.play();
     markPiecesForRemove();
     setupPieces(board);
     removePieces();
@@ -137,9 +164,7 @@ const performAITurn = () => {
 }
 
 const onTermination = () => {
-    box = document.getElementById("message-box");
-    box.style.visibility = "visible";
-
+    var box = document.getElementById("termination-msg");
     if (api.isCheckmate() == 1) {
         box.innerHTML = "Stalemate";
     }
@@ -152,6 +177,11 @@ const onTermination = () => {
     if (api.isCheckmate() == 8) {
         box.innerHTML = "Black wins";
     }
+
+    var termination_modal = document.getElementById("termination-modal");
+    termination_modal.style.display = "block";
+    let audio = new Audio("../audio/Victory.wav");
+    audio.play();
 }
 
 document.getElementById("promQ").onclick = (e) => promoteToType(6);

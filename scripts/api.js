@@ -8,6 +8,8 @@ Module.onRuntimeInitialized = () => {
         performMove: Module.cwrap('performMatchingMove', 'number', ['number', 'number', 'number']),
         performAIMove: Module.cwrap('playAIMove', null, ['number']),
         getTurn: Module.cwrap('getTurn', null, []),
+        getPrevAIMoveTo: Module.cwrap('getPrevAIMoveTo', 'number', []),
+        getPrevAIMoveFrom: Module.cwrap('getPrevAIMoveFrom', 'number', []),
     }
 
     onWASMLoaded();
