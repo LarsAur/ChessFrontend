@@ -75,7 +75,7 @@ const onMouseUp = (e) => {
             setPrevFromTo(from, to);
             let boardView = new Uint8Array(Module.HEAP8.buffer, api.getBoardPointer(), 64);
             let board = new Uint8Array(boardView);
-            var audio = new Audio('../audio/Move.wav');
+            var audio = new Audio('./audio/Move.wav');
             audio.play();
             markPiecesForRemove();
             setupPieces(board);
@@ -151,7 +151,7 @@ const performAITurn = () => {
     setPrevFromTo(api.getPrevAIMoveFrom(), api.getPrevAIMoveTo());
     let boardView = new Uint8Array(Module.HEAP8.buffer, api.getBoardPointer(), 64);
     let board = new Uint8Array(boardView);
-    var audio = new Audio('../audio/Move.wav');
+    var audio = new Audio('./audio/Move.wav');
     audio.play();
     markPiecesForRemove();
     setupPieces(board);
@@ -180,7 +180,7 @@ const onTermination = () => {
 
     var termination_modal = document.getElementById("termination-modal");
     termination_modal.style.display = "block";
-    let audio = new Audio("../audio/Victory.wav");
+    let audio = new Audio("./audio/Victory.wav");
     audio.play();
 }
 
